@@ -2,7 +2,7 @@
 // AURA ETHNIC STUDIO — WEBSITE LOGIC
 // ============================================================
 
-const WHATSAPP_NUMBER = "917891582196"; // Replace with your WhatsApp number.
+const WHATSAPP_NUMBER = "917357924991"; // Replace with your WhatsApp number.
 
 const HERO_IMAGES = [
   "hero-new-arrivals.webp",
@@ -165,5 +165,5 @@ if($("checkoutForm"))$("checkoutForm").onsubmit=e=>{
   window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${message}`,"_blank");
 };
 document.querySelectorAll("[data-close]").forEach(b=>b.onclick=()=>$(b.dataset.close).classList.add("hidden"));
-if($("footerWhatsapp"))$("footerWhatsapp").textContent=WHATSAPP_NUMBER==="917891582196"?"+91 7891582196":"+"+WHATSAPP_NUMBER;
+if($("footerWhatsapp"))$("footerWhatsapp").textContent=WHATSAPP_NUMBER==="917357924991"?"+91 7357924991":"+"+WHATSAPP_NUMBER;
 initHero();renderProducts();renderMoreHome();updateCart();renderCart();
