@@ -7,23 +7,21 @@
 <meta name="description" content="Premium kurtis by Aura Ethnic Studio. 1 set ₹500, 2 sets ₹800, 3 sets ₹1000. Free shipping. Delivery in 3–4 days.">
 <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body data-page="home">
 <div class="announcement">✦ FREE SHIPPING ON EVERY ORDER &nbsp; • &nbsp; DELIVERY IN 3–4 DAYS &nbsp; • &nbsp; 14 DAYS RETURN & REFUND ✦</div>
 
 <header class="header">
   <a href="#home" class="brand">AURA <span>ETHNIC STUDIO</span></a>
   <nav class="desktop-nav">
-    <a href="#home">Home</a><a href="products.html">Kurtis</a><a href="more-products.html">More Styles</a><a href="#fabrics">Fabrics</a><a href="#policies">Policies</a><a href="#contact">Contact</a>
+    <a href="#home">Home</a><a href="products.html">All Products</a><a href="#fabrics">Fabrics</a><a href="#policies">Policies</a><a href="#contact">Contact</a>
   </nav>
   <div class="actions">
-    <button id="searchBtn" aria-label="Search">⌕</button>
     <button id="cartBtn" aria-label="Cart">🛍 <b id="cartCount">0</b></button>
     <button id="menuBtn" class="mobile-menu">☰</button>
   </div>
 </header>
 
-<div id="mobileNav" class="mobile-nav"><a href="#home">Home</a><a href="products.html">Kurtis</a><a href="more-products.html">More Styles</a><a href="#fabrics">Fabrics</a><a href="#policies">Policies</a><a href="#contact">Contact</a></div>
-<div id="searchPanel" class="search-panel"><input id="searchInput" type="search" placeholder="Search kurtis, fabric, collection..."></div>
+<div id="mobileNav" class="mobile-nav"><a href="#home">Home</a><a href="products.html">All Products</a><a href="#fabrics">Fabrics</a><a href="#policies">Policies</a><a href="#contact">Contact</a></div></div>
 
 <main>
 <section id="home" class="hero">
@@ -40,35 +38,35 @@
   <div><span>♡</span><strong>WHATSAPP</strong><small>Easy ordering</small></div>
 </section>
 
-<section id="shop" class="section">
-  <div class="heading-row">
-    <div><p class="eyebrow">CURATED FOR YOU</p><h2>Shop Kurtis</h2><p class="sub">Everyday styles, festive silhouettes and comfortable fabrics.</p></div>
-    <div class="filters">
-      <select id="fabricFilter"><option value="all">All Fabrics</option><option>Cotton</option><option>Georgette</option><option>Mulmul</option><option>Rayon</option><option>Muslin</option></select>
-      <select id="badgeFilter"><option value="all">All Collections</option><option value="New</option>">New</option><option value="Bestseller">Bestseller</option><option value="Trending">Trending</option></select>
-      <select id="sortFilter"><option value="featured">Featured</option><option value="name">Name</option></select>
-    </div>
-  </div>
-  <div id="productGrid" class="product-grid"></div>
-  <div id="noResults" class="no-results hidden">No kurtis match your search.</div>
-  <div class="view-all-wrap catalog-links"><a class="view-all-btn" href="products.html">VIEW ALL KURTIS <span>→</span></a><a class="view-all-btn secondary-catalog-btn" href="more-products.html">EXPLORE MORE STYLES <span>→</span></a></div>
-</section>
-
-<section id="moreStyles" class="section more-styles-section">
-  <div class="heading-row">
+<section id="shop" class="section collection-section">
+  <div class="collection-intro">
     <div>
-      <p class="eyebrow">EXTENDED COLLECTION</p>
-      <h2>More Styles.<br><em>More to love.</em></h2>
-      <p class="sub">Explore additional styles from our extended collection.</p>
+      <p class="eyebrow">THE AURA COLLECTION</p>
+      <h2>One edit.<br><em>More to love.</em></h2>
+      <p class="sub">Signature kurtis and handpicked styles, brought together in one beautiful collection.</p>
     </div>
-    <div class="more-styles-note"><span>CURATED SEPARATELY</span><small>New products added here won't mix with your main kurti collection.</small></div>
   </div>
-  <div id="moreProductGrid" class="product-grid more-product-grid"></div>
-  <div id="moreProductsEmpty" class="more-empty hidden">
-    <strong>Your extended collection is ready.</strong>
-    <span>Add products from <b>admin.html</b> and choose <b>More Styles</b>.</span>
+
+  <div class="collection-toolbar">
+    <div class="filters">
+      <select id="fabricFilter" aria-label="Filter by fabric">
+        <option value="all">All Fabrics</option><option value="Cotton">Cotton</option><option value="Georgette">Georgette</option><option value="Mulmul">Mulmul</option><option value="Rayon">Rayon</option><option value="Muslin">Muslin</option><option value="Other">Other</option>
+      </select>
+      <select id="badgeFilter" aria-label="Filter by collection">
+        <option value="all">All Collections</option><option value="New">New</option><option value="Bestseller">Bestseller</option><option value="BestSeller">BestSeller</option><option value="Trending">Trending</option>
+      </select>
+      <select id="sortFilter" aria-label="Sort products">
+        <option value="featured">Featured</option><option value="name">Name</option>
+      </select>
+    </div>
   </div>
-  <div class="view-all-wrap"><a class="view-all-btn" href="more-products.html">VIEW ALL MORE STYLES <span>→</span></a></div>
+
+  <div id="productGrid" class="product-grid collection-grid"></div>
+  <div id="noResults" class="no-results hidden">No products match your search.</div>
+
+  <div class="view-all-wrap catalog-links">
+    <a class="view-all-btn" href="products.html">VIEW ALL PRODUCTS <span>→</span></a>
+  </div>
 </section>
 
 <section id="fabrics" class="fabric-section section">

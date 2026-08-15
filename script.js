@@ -13,12 +13,12 @@ const HERO_IMAGES = [
 const PRODUCTS = (window.AURA_PRODUCTS || []).map(p => ({collection:"main", price:500, mrp:999, ...p}));
 const MORE_PRODUCTS = (window.AURA_MORE_PRODUCTS || []).map(p => ({collection:"more", price:500, mrp:999, ...p}));
 
-let cart=JSON.parse(localStorage.getItem("auraPremiumCart")||"[]");
+localStorage.removeItem("auraPremiumCart");
+let cart=[];
 let heroIndex=0,heroTimer,modalProduct=null,modalIndex=0;
 const $=id=>document.getElementById(id);
 const cardIndexes={};
-const HOME_PRODUCT_LIMIT=6;
-const MORE_HOME_PRODUCT_LIMIT=4;
+
 
 function allCatalogProducts(){return [...PRODUCTS,...MORE_PRODUCTS]}
 function getProduct(id){return allCatalogProducts().find(p=>String(p.id)===String(id))}
@@ -42,7 +42,7 @@ function productCard(p,i){
       <div class="image-nav"><button onclick="event.stopPropagation();changeCardImage('${p.id}',-1)">‹</button><button onclick="event.stopPropagation();changeCardImage('${p.id}',1)">›</button></div>
     </div>
     <div class="product-info">
-      <div class="fabric">${p.fabric||"ETHNIC STYLE"}</div><h3>${p.name}</h3>
+      <div class="card-meta"><span class="fabric">${p.fabric||"ETHNIC STYLE"}</span><span class="collection-chip">${p.collection==="more"?"MORE STYLES":"KURTIS"}</span></div><h3>${p.name}</h3>
       <div class="price">${priceMarkup(p)}</div>
       <button class="quick" onclick="openProduct('${p.id}')">VIEW DETAILS</button>
     </div>
@@ -63,35 +63,67 @@ function setHero(i){
 if($("heroPrev"))$("heroPrev").onclick=()=>setHero((heroIndex-1+HERO_IMAGES.length)%HERO_IMAGES.length);
 if($("heroNext"))$("heroNext").onclick=()=>setHero((heroIndex+1)%HERO_IMAGES.length);
 
+function homeFeaturedList(){ return [...PRODUCTS.slice(0,8), ...MORE_PRODUCTS.slice(0,4)]; }
+function searchableText(p){
+  return [p.name,p.fabric,p.badge,p.description,p.collection==="more"?"More Styles":"Kurtis"].filter(Boolean).join(" ").toLowerCase();
+}
 function filteredList(source){
-  const fabric=$("fabricFilter")?.value||"all",badge=$("badgeFilter")?.value||"all",sort=$("sortFilter")?.value||"featured",q=($("searchInput")?.value||"").toLowerCase().trim();
-  let list=source.filter(p=>(fabric==="all"||p.fabric===fabric)&&(badge==="all"||p.badge===badge)&&(!q||p.name.toLowerCase().includes(q)||String(p.fabric||"").toLowerCase().includes(q)||String(p.badge||"").toLowerCase().includes(q)));
-  if(sort==="name")list.sort((a,b)=>a.name.localeCompare(b.name));
+  const fabric=($("fabricFilter")?.value||"all").trim().toLowerCase();
+  const badge=($("badgeFilter")?.value||"all").trim().toLowerCase();
+  const sort=$("sortFilter")?.value||"featured";
+  const q=($("searchInput")?.value||"").toLowerCase().trim();
+
+  let list=source.filter(p=>{
+    const pFabric=String(p.fabric||"").trim().toLowerCase();
+    const pBadge=String(p.badge||"").trim().toLowerCase();
+    return (fabric==="all" || pFabric===fabric) &&
+           (badge==="all" || pBadge===badge) &&
+           (!q || searchableText(p).includes(q));
+  });
+
+  if(sort==="name") list.sort((a,b)=>String(a.name||"").localeCompare(String(b.name||"")));
   return list;
 }
+function updateSearchSuggestions(){
+  const box=$("searchSuggestions"),input=$("searchInput"); if(!box||!input)return;
+  const q=input.value.toLowerCase().trim();
+  if(!q){box.innerHTML="";box.classList.add("hidden");return;}
+  const matches=allCatalogProducts().filter(p=>searchableText(p).includes(q)).slice(0,6);
+  if(!matches.length){box.innerHTML='<div class="search-empty">No matching products</div>';box.classList.remove("hidden");return;}
+  box.innerHTML=matches.map(p=>`<button type="button" class="search-suggestion" onclick="selectSearchSuggestion('${String(p.id).replace(/'/g,"\\'")}')"><img src="${p.images?.[0]||""}" alt=""><span><strong>${p.name}</strong><small>${p.collection==="more"?"More Styles":"Kurtis"} • ${p.fabric||"Ethnic Style"}</small></span><b>₹${Number(p.price)||500}</b></button>`).join("");
+  box.classList.remove("hidden");
+}
+function selectSearchSuggestion(id){
+  const p=getProduct(id); if(!p)return;
+  if($("searchInput"))$("searchInput").value=p.name;
+  if($("searchSuggestions"))$("searchSuggestions").classList.add("hidden");
+  renderProducts(); document.querySelector("#shop")?.scrollIntoView({behavior:"smooth",block:"start"});
+}
 function renderProducts(){
-  if(!$("productGrid"))return;
-  const isMore=document.body.dataset.page==="more-products",source=isMore?MORE_PRODUCTS:PRODUCTS,list=filteredList(source);
-  if(isMore){
+  if(!$('productGrid'))return;
+  const page=document.body.dataset.page||'home';
+  const isCatalog=page==='products' || page==='more-products';
+  const source=isCatalog ? allCatalogProducts() : homeFeaturedList();
+  const list=filteredList(source);
+  if(isCatalog){
     const size=12,totalPages=Math.max(1,Math.ceil(list.length/size));
     window.moreCurrentPage=Math.min(window.moreCurrentPage||1,totalPages);
-    const page=window.moreCurrentPage||1,pageItems=list.slice((page-1)*size,page*size);
-    $("productsCount").textContent=`${list.length} styles • Page ${page} of ${totalPages}`;
-    $("noResults").classList.toggle("hidden",list.length!==0);
-    $("productGrid").innerHTML=pageItems.map(productCard).join("");
-    renderPagination(list.length,page,size);
-  }else{
-    const visibleList=document.body.dataset.page==="products"?list:list.slice(0,HOME_PRODUCT_LIMIT);
-    $("noResults").classList.toggle("hidden",list.length!==0);
-    $("productGrid").innerHTML=visibleList.map(productCard).join("");
+    const pageNo=window.moreCurrentPage||1,pageItems=list.slice((pageNo-1)*size,pageNo*size);
+    if($('productsCount'))$('productsCount').textContent=`${list.length} products • Page ${pageNo} of ${totalPages}`;
+    $('noResults').classList.toggle('hidden',list.length!==0);
+    $('productGrid').innerHTML=pageItems.map(productCard).join('');
+    renderPagination(list.length,pageNo,size);
+    return;
   }
+  $('noResults').classList.toggle('hidden',list.length!==0);
+  $('productGrid').innerHTML=list.map(productCard).join('');
 }
 function renderMoreHome(){
-  if(!$("moreProductGrid"))return;
-  const list=MORE_PRODUCTS.slice(0,MORE_HOME_PRODUCT_LIMIT);
-  $("moreProductGrid").innerHTML=list.map(productCard).join("");
-  $("moreProductsEmpty").classList.toggle("hidden",list.length!==0);
+  // Kept for backwards compatibility with older page markup.
+  if($("moreProductGrid"))$("moreProductGrid").innerHTML="";
+  if($("moreProductsEmpty"))$("moreProductsEmpty").classList.add("hidden");
 }
+
 function renderPagination(total,page,size){
   const pg=$("pagination");if(!pg)return;const totalPages=Math.max(1,Math.ceil(total/size));pg.innerHTML="";
   if(totalPages>1){
@@ -110,11 +142,9 @@ function changeCardImage(id,dir){
 }
 
 ["fabricFilter","badgeFilter","sortFilter"].forEach(id=>{if($(id))$(id).onchange=()=>{window.moreCurrentPage=1;renderProducts()}});
-if($("searchInput"))$("searchInput").oninput=()=>{window.moreCurrentPage=1;renderProducts()};
-if($("searchBtn"))$("searchBtn").onclick=()=>{$("searchPanel").classList.toggle("open");if($("searchPanel").classList.contains("open"))$("searchInput").focus()};
 if($("menuBtn"))$("menuBtn").onclick=()=>$("mobileNav").classList.toggle("open");
 document.querySelectorAll(".mobile-nav a").forEach(a=>a.onclick=()=>$("mobileNav").classList.remove("open"));
-document.querySelectorAll(".fabric-grid button").forEach(b=>b.onclick=()=>{if($("fabricFilter"))$("fabricFilter").value=b.dataset.fabric;renderProducts();if($("shop"))$("shop").scrollIntoView({behavior:"smooth"})});
+document.querySelectorAll(".fabric-grid button").forEach(b=>b.onclick=()=>{if($("fabricFilter")){const value=b.dataset.fabric;const opt=[...$("fabricFilter").options].find(o=>o.value.toLowerCase()===value.toLowerCase());$("fabricFilter").value=opt?opt.value:value;}window.moreCurrentPage=1;renderProducts();if($("shop"))$("shop").scrollIntoView({behavior:"smooth"})});
 
 function openProduct(id){
   modalProduct=getProduct(id);modalIndex=0;if(!modalProduct)return;
@@ -166,4 +196,4 @@ if($("checkoutForm"))$("checkoutForm").onsubmit=e=>{
 };
 document.querySelectorAll("[data-close]").forEach(b=>b.onclick=()=>$(b.dataset.close).classList.add("hidden"));
 if($("footerWhatsapp"))$("footerWhatsapp").textContent=WHATSAPP_NUMBER==="917357924991"?"+91 7357924991":"+"+WHATSAPP_NUMBER;
-initHero();renderProducts();renderMoreHome();updateCart();renderCart();
+initHero();renderProducts();updateCart();renderCart();
