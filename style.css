@@ -118,3 +118,5 @@ html,body{max-width:100%;overflow-x:hidden}.product-image img,.gallery>img{max-w
 .products-toolbar{display:flex;align-items:center;justify-content:space-between;gap:20px;margin:0 0 28px}
 .products-count{font-size:11px;color:#8a776c;letter-spacing:.4px}
 @media(max-width:620px){.products-toolbar{align-items:flex-start;flex-direction:column;gap:10px}.catalog-links .view-all-btn{width:100%}}
+
+@media(max-width:620px){.product-grid,.collection-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;}.product-grid .product-card,.collection-grid .product-card{min-width:0;}}
