@@ -402,4 +402,16 @@ window.AURA_MORE_PRODUCTS = [
       'https://lucknowichikan.com/cdn/shop/files/chanderi_silk_kurta_for_women.jpg?v=1759315561&width=1080',"https://lucknowichikan.com/cdn/shop/files/pure_chanderi_silk_suits47.jpg?v=1759315589&width=1080","https://lucknowichikan.com/cdn/shop/files/pure_chanderi_silk_suits634.jpg?v=1759315624&width=1080","https://lucknowichikan.com/cdn/shop/files/best_quality_rayon_fabric.jpg?v=1759315648&width=1080","https://lucknowichikan.com/cdn/shop/files/printed_rayon_fabric_online.jpg?v=1759315789&width=1080"
     ]
   },
+  {
+    id: '034',
+    name: 'Georgette Kurta With 3D Handwork - Hot Pink',
+    fabric: 'Georgette',
+    badge: '',
+    mrp: 2400,
+    price: 500,
+    description: 'Lightweight georgette finish with an elegant ethnic silhouette.',
+    images: [
+      'https://lucknowichikan.com/cdn/shop/files/IMG_2493.jpg?v=1763731652&width=1080',"https://lucknowichikan.com/cdn/shop/files/IMG_2490_2b6f569f-041a-41f9-a25f-bbf267be95f2.jpg?v=1763731675&width=1080","https://lucknowichikan.com/cdn/shop/files/IMG_2491_d8bf415b-3677-4af8-9bb9-c93888c8f116.jpg?v=1763731675&width=1080","https://lucknowichikan.com/cdn/shop/files/IMG_2494_7c961fa0-a0aa-43ca-87a6-7a3fec97c95f.jpg?v=1763731675&width=1080"
+    ]
+  },
 ];
