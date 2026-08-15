@@ -63,7 +63,7 @@ function setHero(i){
 if($("heroPrev"))$("heroPrev").onclick=()=>setHero((heroIndex-1+HERO_IMAGES.length)%HERO_IMAGES.length);
 if($("heroNext"))$("heroNext").onclick=()=>setHero((heroIndex+1)%HERO_IMAGES.length);
 
-function homeFeaturedList(){ return [...PRODUCTS.slice(0,8), ...MORE_PRODUCTS.slice(0,4)]; }
+function homeFeaturedList(){ return [...MORE_PRODUCTS.slice(0,4), ...PRODUCTS.slice(0,8)]; }
 function searchableText(p){
   return [p.name,p.fabric,p.badge,p.description,p.collection==="more"?"More Styles":"Kurtis"].filter(Boolean).join(" ").toLowerCase();
 }
