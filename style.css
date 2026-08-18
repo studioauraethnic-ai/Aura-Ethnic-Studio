@@ -120,3 +120,21 @@ html,body{max-width:100%;overflow-x:hidden}.product-image img,.gallery>img{max-w
 @media(max-width:620px){.products-toolbar{align-items:flex-start;flex-direction:column;gap:10px}.catalog-links .view-all-btn{width:100%}}
 
 @media(max-width:620px){.product-grid,.collection-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;}.product-grid .product-card,.collection-grid .product-card{min-width:0;}}
+
+/* Customer Notice Modal */
+.notice-overlay{position:fixed;inset:0;background:rgba(15,12,10,.68);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);z-index:99999;display:flex;align-items:center;justify-content:center;padding:18px;opacity:0;visibility:hidden;transition:opacity .25s ease,visibility .25s ease}
+.notice-overlay.show{opacity:1;visibility:visible}
+.notice-modal{width:min(680px,100%);max-height:min(88vh,760px);overflow:auto;background:#fffdf9;border:1px solid rgba(120,85,55,.18);box-shadow:0 24px 80px rgba(0,0,0,.3);border-radius:18px;padding:28px 30px 24px;position:relative;color:#2d241d}
+.notice-top{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;border-bottom:1px solid #eadfd4;padding-bottom:16px;margin-bottom:18px}
+.notice-kicker{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#8a674b;font-weight:700;margin:0 0 7px}
+.notice-title{font-family:Georgia,serif;font-size:27px;line-height:1.15;margin:0;color:#241b15}
+.notice-close{border:0;background:#f2ece5;color:#49382c;width:36px;height:36px;border-radius:50%;font-size:24px;line-height:1;cursor:pointer;flex:0 0 auto}
+.notice-modal p{font-size:14px;line-height:1.7;margin:10px 0;color:#51463d}
+.notice-modal strong{color:#2c2119}
+.notice-list{margin:14px 0 18px;padding:0;list-style:none;display:grid;gap:9px}
+.notice-list li{font-size:14px;line-height:1.55;padding-left:27px;position:relative;color:#443930}
+.notice-list li:before{content:'✓';position:absolute;left:0;top:0;color:#8a674b;font-weight:800}
+.notice-trust{background:#f7f1ea;border-radius:12px;padding:12px 14px;margin-top:16px}
+.notice-action{width:100%;margin-top:18px;border:0;border-radius:10px;padding:13px 18px;background:#2d241d;color:#fff;font-weight:700;letter-spacing:.06em;font-size:12px;cursor:pointer}
+body.notice-open{overflow:hidden}
+@media(max-width:600px){.notice-overlay{padding:12px}.notice-modal{padding:22px 18px 18px;border-radius:15px;max-height:92vh}.notice-title{font-size:22px}.notice-modal p,.notice-list li{font-size:13px}.notice-action{padding:12px}}
