@@ -13,8 +13,18 @@ const HERO_IMAGES = [
 const PRODUCTS = (window.AURA_PRODUCTS || []).map(p => ({collection:"main", price:500, mrp:999, ...p}));
 const MORE_PRODUCTS = (window.AURA_MORE_PRODUCTS || []).map(p => ({collection:"more", price:500, mrp:999, ...p}));
 
-localStorage.removeItem("auraPremiumCart");
+// Keep the bag stable while the customer moves between pages or uses Back.
+// sessionStorage gives us the best mobile behaviour here: a fresh browser session
+// starts with an empty bag, but navigation/back/reload inside the same session
+// does not silently delete the customer's selections.
+const CART_KEY = "auraPremiumCartSessionV1";
 let cart=[];
+try {
+  const saved = JSON.parse(sessionStorage.getItem(CART_KEY) || "[]");
+  cart = Array.isArray(saved) ? saved.filter(x => x && x.id != null && Number(x.qty) > 0) : [];
+} catch(e) { cart=[]; }
+// Remove the legacy persisted cart once so old test items cannot reappear.
+try { localStorage.removeItem("auraPremiumCart"); } catch(e) {}
 let heroIndex=0,heroTimer,modalProduct=null,modalIndex=0;
 const $=id=>document.getElementById(id);
 const cardIndexes={};
@@ -210,7 +220,7 @@ function bundleTotal(sets){
   if(sets<=0)return 0;if(sets===1)return 500;if(sets===2)return 800;if(sets===3)return 1000;
   return Math.floor(sets/3)*1000+(sets%3===1?500:800);
 }
-function saveCart(){localStorage.setItem("auraPremiumCart",JSON.stringify(cart));updateCart();renderCart()}
+function saveCart(){try{sessionStorage.setItem(CART_KEY,JSON.stringify(cart))}catch(e){}updateCart();renderCart()}
 function updateCart(){if($("cartCount"))$("cartCount").textContent=cart.reduce((s,x)=>s+x.qty,0)}
 function renderCart(){
   if(!$("cartItems"))return;
@@ -223,7 +233,7 @@ function renderCart(){
   if($("cartOfferNote")){
     $("cartOfferNote").textContent=sets===0?"Add 2 sets to unlock bundle savings.":sets===1?"Add 1 more set: 2 sets for ₹800 — save ₹200.":sets===2?"Offer applied: 2 sets for ₹800 — you save ₹200.":sets===3?"Best offer applied: 3 sets for ₹1000 — you save ₹500.":`Bundle offer applied — you save ₹${saving}.`;
   }
-  $("cartItems").innerHTML=cart.length?cart.map((x,i)=>{const p=getProduct(x.id);if(!p)return "";return `<div class="cart-item"><img src="${p.images[0]}" alt="${p.name}"><div><h4>${p.name}</h4><small>${p.fabric||"Ethnic Style"} • Size ${x.size}</small><div class="qty"><button onclick="changeQty(${i},-1)">−</button><span>${x.qty}</span><button onclick="changeQty(${i},1)">+</button></div></div><button class="remove" onclick="removeItem(${i})">REMOVE</button></div>`}).join(""):`<p style="color:#877870;font-size:12px">Your shopping bag is empty.</p>`;
+  $("cartItems").innerHTML=cart.length?cart.map((x,i)=>{const p=getProduct(x.id);if(!p)return "";return `<div class="cart-item"><img src="${p.images[0]}" alt="${p.name}" onerror="this.onerror=null;this.src='kurti-01.jpg'"><div><h4>${p.name}</h4><small>${p.fabric||"Ethnic Style"} • Size ${x.size}</small><div class="qty"><button onclick="changeQty(${i},-1)">−</button><span>${x.qty}</span><button onclick="changeQty(${i},1)">+</button></div></div><button class="remove" onclick="removeItem(${i})">REMOVE</button></div>`}).join(""):`<p style="color:#877870;font-size:12px">Your shopping bag is empty.</p>`;
 }
 function changeQty(i,d){
   const item=cart[i],product=item?getProduct(item.id):null;
@@ -253,4 +263,11 @@ if($("checkoutForm"))$("checkoutForm").onsubmit=e=>{
 };
 document.querySelectorAll("[data-close]").forEach(b=>b.onclick=()=>$(b.dataset.close).classList.add("hidden"));
 if($("footerWhatsapp"))$("footerWhatsapp").textContent=WHATSAPP_NUMBER==="917357924991"?"+91 7357924991":"+"+WHATSAPP_NUMBER;
+window.addEventListener("pageshow",()=>{
+  try{
+    const saved=JSON.parse(sessionStorage.getItem(CART_KEY)||"[]");
+    if(Array.isArray(saved)) cart=saved.filter(x=>x&&x.id!=null&&Number(x.qty)>0);
+  }catch(e){}
+  updateCart();renderCart();
+});
 initHero();renderProducts();updateCart();renderCart();
