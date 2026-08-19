@@ -35,7 +35,7 @@ function productCard(p,i){
   const off=discountPercent(p);
   return `<article class="product-card" style="animation-delay:${Math.min(i*50,300)}ms">
     <div class="product-image">
-      <img id="cardimg-${p.id}" src="${p.images[0]}" alt="${p.name}" loading="lazy">
+      <img id="cardimg-${p.id}" src="${p.images[0]}" alt="${p.name}" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='kurti-01.jpg'">
       ${p.badge?`<span class="badge">${p.badge}</span>`:""}
       ${off?`<span class="sale-badge">${off}% OFF</span>`:""}
       <button class="wishlist" onclick="event.stopPropagation();this.textContent=this.textContent==='♡'?'♥':'♡'">♡</button>
@@ -170,6 +170,7 @@ function openProduct(id){
   renderModal();$("productModal").classList.remove("hidden");
 }
 function renderModal(){
+  $("modalImage").onerror=()=>{$("modalImage").onerror=null;$("modalImage").src="kurti-01.jpg"};
   $("modalImage").src=modalProduct.images[modalIndex];
   $("modalThumbs").innerHTML=modalProduct.images.map((src,i)=>`<img src="${src}" class="${i===modalIndex?"active":""}" onclick="modalIndex=${i};renderModal()">`).join("");
 }
@@ -188,7 +189,10 @@ function showCartToast(title,message,type="added"){
     toast=document.createElement("div");
     toast.id="cartToast";
     toast.className="cart-toast";
-    toast.innerHTML='<span class="cart-toast-icon"></span><div><strong></strong><small></small></div>';
+    toast.setAttribute("role","status");
+    toast.setAttribute("aria-live","polite");
+    toast.setAttribute("aria-atomic","true");
+    toast.innerHTML='<span class="cart-toast-icon"></span><div class="cart-toast-copy"><strong></strong><small></small></div>';
     document.body.appendChild(toast);
   }
   toast.classList.remove("show","added","removed");
@@ -237,7 +241,7 @@ function removeItem(i){
 function openCart(){renderCart();$("cartDrawer").classList.add("open");$("overlay").classList.add("show")}
 function closeCart(){$("cartDrawer").classList.remove("open");$("overlay").classList.remove("show")}
 if($("cartBtn"))$("cartBtn").onclick=openCart;if($("closeCart"))$("closeCart").onclick=closeCart;if($("overlay"))$("overlay").onclick=closeCart;
-if($("checkoutBtn"))$("checkoutBtn").onclick=()=>{if(!cart.length){alert("Your shopping bag is empty.");return}closeCart();$("checkoutModal").classList.remove("hidden")};
+if($("checkoutBtn"))$("checkoutBtn").onclick=()=>{if(!cart.length){showCartToast("Your bag is empty","Add a product before continuing","removed");return}closeCart();$("checkoutModal").classList.remove("hidden")};
 if($("checkoutForm"))$("checkoutForm").onsubmit=e=>{
   e.preventDefault();
   const name=$("customerName").value.trim(),phone=$("customerPhone").value.trim(),email=$("customerEmail").value.trim(),address=$("customerAddress").value.trim(),city=$("customerCity").value.trim(),state=$("customerState").value.trim(),pin=$("customerPincode").value.trim(),payment=$("customerPayment").value,note=$("customerNote").value.trim();

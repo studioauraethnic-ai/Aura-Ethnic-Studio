@@ -371,3 +371,43 @@ body{font-family:Arial,sans-serif;-webkit-font-smoothing:antialiased}
   .fabric-section:after{content:"Swipe to explore fabrics  →";display:block;text-align:center;margin-top:4px;font-size:8px;letter-spacing:1.2px;text-transform:uppercase;color:#9b877d}
 }
 @media(max-width:390px){.fabric-grid button,.fabric-grid button:last-child{flex-basis:78%!important}}
+
+/* FINAL SIZE CONTROLS ALIGNMENT — only visual sizing, no other changes */
+.size-row{align-items:end}
+.size-row .size-label select,.size-row .size-chart-btn{height:43px;min-height:43px}
+@media (max-width:620px){
+  .size-row{align-items:end!important}
+  .size-row .size-label select,.size-row .size-chart-btn{height:42px!important;min-height:42px!important}
+}
+
+/* ===== POLISHED CART FEEDBACK + RELIABILITY TWEAKS ===== */
+.cart-toast{overflow:hidden}
+.cart-toast:before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:#647a6d}
+.cart-toast.removed:before{background:#a56f63}
+.cart-toast-copy{min-width:0;flex:1}
+.cart-toast.added .cart-toast-icon{background:#edf3ee;color:#3e6550}
+.cart-toast.removed .cart-toast-icon{background:#f7eeeb;color:#8b5146}
+.cart-toast strong{font-weight:700}
+.product-image img,.gallery>img{background:#f3ece7}
+.quick,.primary,.size-chart-btn,.fabric-grid button{-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+
+@media(max-width:620px){
+  /* Keep notifications near the top where they are easier to notice and do not fight the bottom shop bar. */
+  .cart-toast{
+    top:calc(68px + env(safe-area-inset-top));
+    bottom:auto;
+    left:12px;
+    right:12px;
+    max-width:none;
+    min-height:58px;
+    padding:10px 12px 10px 13px;
+    border-radius:14px;
+    box-shadow:0 12px 34px rgba(36,28,25,.16);
+    transform:translateY(-10px) scale(.985);
+    backdrop-filter:blur(12px);
+  }
+  .cart-toast.show{transform:none}
+  .cart-toast-icon{width:34px;height:34px;flex-basis:34px;font-size:16px}
+  .cart-toast strong{font-size:11.5px;line-height:1.25}
+  .cart-toast small{font-size:9.5px;line-height:1.3;max-width:calc(100vw - 94px);margin-top:2px}
+}
