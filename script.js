@@ -103,8 +103,18 @@ function renderProducts(){
   if(!$('productGrid'))return;
   const page=document.body.dataset.page||'home';
   const isCatalog=page==='products' || page==='more-products';
-  const source=isCatalog ? allCatalogProducts() : homeFeaturedList();
-  const list=filteredList(source);
+
+  // Home normally shows the fixed 6 featured products. As soon as a customer
+  // selects a fabric/collection filter, search the COMPLETE catalog (Main + More
+  // Styles) and show up to 6 matching products on the homepage.
+  const activeFabric=($('fabricFilter')?.value||'all').trim().toLowerCase();
+  const activeBadge=($('badgeFilter')?.value||'all').trim().toLowerCase();
+  const activeQuery=($('searchInput')?.value||'').trim();
+  const homeFilterActive=activeFabric!=='all' || activeBadge!=='all' || !!activeQuery;
+  const source=isCatalog ? allCatalogProducts() : (homeFilterActive ? allCatalogProducts() : homeFeaturedList());
+  let list=filteredList(source);
+  if(!isCatalog && homeFilterActive) list=list.slice(0,6);
+
   if(isCatalog){
     const size=12,totalPages=Math.max(1,Math.ceil(list.length/size));
     window.moreCurrentPage=Math.min(window.moreCurrentPage||1,totalPages);
@@ -166,6 +176,8 @@ function renderModal(){
 if($("modalPrev"))$("modalPrev").onclick=()=>{modalIndex=(modalIndex-1+modalProduct.images.length)%modalProduct.images.length;renderModal()};
 if($("modalNext"))$("modalNext").onclick=()=>{modalIndex=(modalIndex+1)%modalProduct.images.length;renderModal()};
 if($("modalAdd"))$("modalAdd").onclick=()=>{addToCart(modalProduct.id,$("modalSize").value);$("productModal").classList.add("hidden")};
+if($("sizeChartBtn"))$("sizeChartBtn").onclick=()=>$("sizeChartModal").classList.remove("hidden");
+
 
 function addToCart(id,size="M"){const x=cart.find(i=>String(i.id)===String(id)&&i.size===size);if(x)x.qty++;else cart.push({id,size,qty:1});saveCart();openCart()}
 function bundleTotal(sets){
@@ -176,7 +188,15 @@ function saveCart(){localStorage.setItem("auraPremiumCart",JSON.stringify(cart))
 function updateCart(){if($("cartCount"))$("cartCount").textContent=cart.reduce((s,x)=>s+x.qty,0)}
 function renderCart(){
   if(!$("cartItems"))return;
-  const sets=cart.reduce((s,x)=>s+x.qty,0);$("cartSets").textContent=sets;$("cartTotal").textContent="₹"+bundleTotal(sets);
+  const sets=cart.reduce((s,x)=>s+x.qty,0);
+  const regular=sets*500,total=bundleTotal(sets),saving=Math.max(0,regular-total);
+  $("cartSets").textContent=sets;
+  if($("cartRegular"))$("cartRegular").textContent="₹"+regular;
+  if($("cartSaving"))$("cartSaving").textContent=saving?"−₹"+saving:"−₹0";
+  $("cartTotal").textContent="₹"+total;
+  if($("cartOfferNote")){
+    $("cartOfferNote").textContent=sets===0?"Add 2 sets to unlock bundle savings.":sets===1?"Add 1 more set: 2 sets for ₹800 — save ₹200.":sets===2?"Offer applied: 2 sets for ₹800 — you save ₹200.":sets===3?"Best offer applied: 3 sets for ₹1000 — you save ₹500.":`Bundle offer applied — you save ₹${saving}.`;
+  }
   $("cartItems").innerHTML=cart.length?cart.map((x,i)=>{const p=getProduct(x.id);if(!p)return "";return `<div class="cart-item"><img src="${p.images[0]}" alt="${p.name}"><div><h4>${p.name}</h4><small>${p.fabric||"Ethnic Style"} • Size ${x.size}</small><div class="qty"><button onclick="changeQty(${i},-1)">−</button><span>${x.qty}</span><button onclick="changeQty(${i},1)">+</button></div></div><button class="remove" onclick="removeItem(${i})">REMOVE</button></div>`}).join(""):`<p style="color:#877870;font-size:12px">Your shopping bag is empty.</p>`;
 }
 function changeQty(i,d){cart[i].qty+=d;if(cart[i].qty<=0)cart.splice(i,1);saveCart()}
@@ -189,9 +209,9 @@ if($("checkoutForm"))$("checkoutForm").onsubmit=e=>{
   e.preventDefault();
   const name=$("customerName").value.trim(),phone=$("customerPhone").value.trim(),email=$("customerEmail").value.trim(),address=$("customerAddress").value.trim(),city=$("customerCity").value.trim(),state=$("customerState").value.trim(),pin=$("customerPincode").value.trim(),payment=$("customerPayment").value,note=$("customerNote").value.trim();
   if(!/^\d{6}$/.test(pin)){alert("Please enter a valid 6-digit PIN code.");return}
-  const sets=cart.reduce((s,x)=>s+x.qty,0),total=bundleTotal(sets);
+  const sets=cart.reduce((s,x)=>s+x.qty,0),regular=sets*500,total=bundleTotal(sets),saving=Math.max(0,regular-total);
   const items=cart.map(x=>{const p=getProduct(x.id);if(!p)return "";return `• ${p.name} | ${p.collection==="more"?"More Styles":"Kurtis"} | Fabric: ${p.fabric||"Ethnic Style"} | Size: ${x.size} | Qty: ${x.qty}`}).filter(Boolean).join("\n");
-  const message=`*AURA ETHNIC STUDIO — NEW ORDER*%0A%0A*CUSTOMER DETAILS*%0AName: ${encodeURIComponent(name)}%0APhone: ${encodeURIComponent(phone)}%0AEmail: ${encodeURIComponent(email)}%0A%0A*DELIVERY ADDRESS*%0A${encodeURIComponent(address)}%0ACity: ${encodeURIComponent(city)}%0AState: ${encodeURIComponent(state)}%0APIN: ${encodeURIComponent(pin)}%0A%0A*ORDER ITEMS*%0A${encodeURIComponent(items)}%0A%0ATotal Sets: ${sets}%0AOrder Total: ₹${total}%0AShipping: ₹0%0AExpected Delivery: *3–4 Days*%0APayment: ${encodeURIComponent(payment)}%0AOrder Note: ${encodeURIComponent(note||"None")}%0A%0APlease confirm the order and share the next payment/order-completion steps.`;
+  const message=`*AURA ETHNIC STUDIO — NEW ORDER*%0A%0A*CUSTOMER DETAILS*%0AName: ${encodeURIComponent(name)}%0APhone: ${encodeURIComponent(phone)}%0AEmail: ${encodeURIComponent(email)}%0A%0A*DELIVERY ADDRESS*%0A${encodeURIComponent(address)}%0ACity: ${encodeURIComponent(city)}%0AState: ${encodeURIComponent(state)}%0APIN: ${encodeURIComponent(pin)}%0A%0A*ORDER ITEMS*%0A${encodeURIComponent(items)}%0A%0ATotal Sets: ${sets}%0ARegular Price: ₹${regular}%0ABundle Offer Saving: ₹${saving}%0AOrder Total: ₹${total}%0AShipping: ₹0%0AExpected Delivery: *3–4 Days*%0APayment: ${encodeURIComponent(payment)}%0AOrder Note: ${encodeURIComponent(note||"None")}%0A%0APlease confirm the order and share the next payment/order-completion steps.`;
   window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${message}`,"_blank");
 };
 document.querySelectorAll("[data-close]").forEach(b=>b.onclick=()=>$(b.dataset.close).classList.add("hidden"));
