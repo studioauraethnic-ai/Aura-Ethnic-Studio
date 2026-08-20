@@ -1,6 +1,6 @@
 "use strict";
 
-var CACHE_NAME = "aura-storefront-v3";
+var CACHE_NAME = "aura-storefront-v4";
 var CORE_FILES = [
   "./",
   "./index.html",

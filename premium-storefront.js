@@ -8,6 +8,7 @@
   var upgradeScheduled = false;
   var deepLinkHandled = false;
   var installPrompt = null;
+  var installEligibleAt = 0;
   var toastTimer = null;
 
   function escapeHtml(value) {
@@ -463,6 +464,8 @@
 
   function showInstallBanner() {
     if (!installPrompt || document.querySelector(".aura-install-banner")) return;
+    if (Date.now() < installEligibleAt) return;
+    if (document.querySelector(".product-layer, .checkout-layer, .cart-layer.open, .aura-wishlist-layer.is-open")) return;
     var dismissedAt = Number(localStorage.getItem(DISMISS_KEY) || 0);
     if (dismissedAt && Date.now() - dismissedAt < 7 * 24 * 60 * 60 * 1000) return;
     var banner = document.createElement("aside");
@@ -497,7 +500,8 @@
     window.addEventListener("beforeinstallprompt", function (event) {
       event.preventDefault();
       installPrompt = event;
-      showInstallBanner();
+      installEligibleAt = Date.now() + 8000;
+      window.setTimeout(showInstallBanner, 8000);
     });
     window.addEventListener("appinstalled", function () {
       installPrompt = null;
@@ -514,6 +518,7 @@
     renderRecent();
     enhanceOpenModal();
     handleDeepLink();
+    showInstallBanner();
   }
 
   function scheduleUpgrades() {

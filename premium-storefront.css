@@ -526,6 +526,13 @@
   padding: 0 13px;
 }
 
+body:has(.product-layer) .aura-install-banner,
+body:has(.checkout-layer) .aura-install-banner,
+body:has(.cart-layer.open) .aura-install-banner,
+body:has(.aura-wishlist-layer.is-open) .aura-install-banner {
+  display: none;
+}
+
 .aura-install-accept {
   background: #fff;
   color: var(--aura-upgrade-brown);
