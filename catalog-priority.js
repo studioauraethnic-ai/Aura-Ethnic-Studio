@@ -14,15 +14,13 @@
   }).map(function (product) {
     return withAllSizes(product, "Bestseller");
   });
-  var remainingMoreProducts = moreProducts.filter(function (product) {
-    return !/swati\s+rathi/i.test(product.name || "");
-  }).map(function (product) {
+
+  window.AURA_PRODUCTS = mainProducts.map(function (product) {
     return withAllSizes(product);
   });
-
-  window.AURA_PRODUCTS = swatiRathiProducts.concat(mainProducts.map(function (product) {
-    return withAllSizes(product);
-  }));
-  window.AURA_MORE_PRODUCTS = remainingMoreProducts;
+  window.AURA_MORE_PRODUCTS = moreProducts.map(function (product) {
+    return withAllSizes(product, /swati\s+rathi/i.test(product.name || "") ? "Bestseller" : "");
+  });
+  window.AURA_SWATI_RATHI_PRODUCTS = swatiRathiProducts;
   window.AURA_SWATI_RATHI_COUNT = swatiRathiProducts.length;
 })();
