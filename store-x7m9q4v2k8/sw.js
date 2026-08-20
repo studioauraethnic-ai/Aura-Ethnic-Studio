@@ -1,6 +1,6 @@
 "use strict";
 
-var CACHE_NAME = "aura-storefront-v7";
+var CACHE_NAME = "aura-storefront-v8";
 var CORE_FILES = [
   "./",
   "./index.html",
@@ -15,7 +15,7 @@ var CORE_FILES = [
   "./assets/index-CadshQGV.css",
   "./search-enhancements.js",
   "./search-enhancements.css",
-  "./premium-storefront.js?v=7",
+  "./premium-storefront.js?v=8",
   "./premium-storefront.css?v=7"
 ];
 

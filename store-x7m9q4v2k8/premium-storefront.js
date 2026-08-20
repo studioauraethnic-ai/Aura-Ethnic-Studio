@@ -580,7 +580,8 @@
   function whatsappOrderMessage(data, trackingId) {
     return [
       "*AURA ETHNIC STUDIO — NEW ORDER*",
-      "*Tracking ID: " + trackingId + "*",
+      "*COPY TRACKING ID*",
+      "```" + trackingId + "```",
       "",
       "*CUSTOMER DETAILS*",
       "Name: " + data.customerName,
@@ -604,7 +605,7 @@
       "",
       "*TRACKING*",
       "Track here: " + TRACKING_PAGE_URL,
-      "Use Tracking ID " + trackingId + " and phone last 4 digits " + data.phone.slice(-4) + ".",
+      "Use the Tracking ID shown above and phone last 4 digits " + data.phone.slice(-4) + ".",
       "Full tracking unlocks after payment is confirmed.",
       "",
       "Please confirm the order and share the payment steps."
@@ -687,7 +688,7 @@
   function registerApp() {
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", function () {
-        navigator.serviceWorker.register("./sw.js?v=7", {
+        navigator.serviceWorker.register("./sw.js?v=8", {
           scope: "./",
           updateViaCache: "none"
         }).then(function (registration) {
