@@ -494,7 +494,12 @@
   function registerApp() {
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", function () {
-        navigator.serviceWorker.register("./sw.js", { scope: "./" }).catch(function () {});
+        navigator.serviceWorker.register("./sw.js?v=5", {
+          scope: "./",
+          updateViaCache: "none"
+        }).then(function (registration) {
+          return registration.update();
+        }).catch(function () {});
       }, { once: true });
     }
     window.addEventListener("beforeinstallprompt", function (event) {
