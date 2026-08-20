@@ -122,12 +122,6 @@
     }
 
     var chips = Array.from(quickBar.querySelectorAll(".aura-search-chip"));
-    if (!input.dataset.auraEnhanced) {
-      input.dataset.auraEnhanced = "true";
-      input.addEventListener("input", function () {
-        updateControls(input, clearButton, chips);
-      });
-    }
     updateControls(input, clearButton, chips);
     enhanceImages();
   }
@@ -150,6 +144,12 @@
         input.focus();
         input.scrollIntoView({ behavior: "smooth", block: "center" });
       }
+    }
+  });
+
+  document.addEventListener("input", function (event) {
+    if (event.target && event.target.id === "catalog-search") {
+      scheduleEnhancement();
     }
   });
 
