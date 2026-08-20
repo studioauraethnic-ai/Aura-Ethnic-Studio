@@ -72,10 +72,144 @@
     return bar;
   }
 
+  function escapeHtml(value) {
+    return String(value == null ? "" : value).replace(/[&<>\"']/g, function (character) {
+      return {
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#039;"
+      }[character];
+    });
+  }
+
+  function withImageWidth(source, width) {
+    if (!source || !/^https?:/i.test(source)) return source;
+    try {
+      var url = new URL(source);
+      var isShopifyImage = /\/cdn\/shop\/files\//.test(url.pathname);
+      if (!isShopifyImage) return source;
+      url.searchParams.set("width", String(width));
+      return url.toString();
+    } catch (error) {
+      return source;
+    }
+  }
+
+  function optimizeImage(image, width) {
+    if (!image) return;
+    image.loading = "lazy";
+    image.decoding = "async";
+    var source = image.getAttribute("src") || image.src;
+    var optimizedSource = withImageWidth(source, width);
+    if (optimizedSource && optimizedSource !== source) {
+      image.src = optimizedSource;
+    }
+    image.dataset.auraOptimized = String(width);
+  }
+
   function enhanceImages() {
     document.querySelectorAll(".product-media img").forEach(function (image) {
-      if (!image.hasAttribute("loading")) image.loading = "lazy";
-      if (!image.hasAttribute("decoding")) image.decoding = "async";
+      optimizeImage(image, 640);
+    });
+    document.querySelectorAll(".thumbnails img").forEach(function (image) {
+      optimizeImage(image, 180);
+    });
+    document.querySelectorAll(".aura-swati-card img").forEach(function (image) {
+      optimizeImage(image, 520);
+    });
+    document.querySelectorAll(".product-gallery > img").forEach(function (image) {
+      image.decoding = "async";
+    });
+  }
+
+  function searchAndScroll(input, query) {
+    setReactInputValue(input, query);
+    var collection = document.querySelector(".collection");
+    if (collection) collection.scrollIntoView({ behavior: "smooth", block: "start" });
+    scheduleEnhancement();
+  }
+
+  function makeSwatiSection(input) {
+    var products = Array.isArray(window.AURA_SWATI_RATHI_PRODUCTS)
+      ? window.AURA_SWATI_RATHI_PRODUCTS.slice(0, 6)
+      : [];
+    var total = window.AURA_SWATI_RATHI_COUNT || products.length;
+    var section = document.createElement("section");
+    section.id = "swati-edit";
+    section.className = "aura-swati-edit section";
+    section.innerHTML = [
+      '<div class="aura-swati-heading">',
+      '<div><p class="eyebrow">CELEBRITY STYLE EDIT</p><h2>The Swati Rathi <em>Edit</em></h2></div>',
+      '<p>A dedicated selection of the styles customers love—now easy to discover without changing the main collection order.</p>',
+      '</div>',
+      '<div class="aura-swati-rail">',
+      products.map(function (product) {
+        var image = product.images && product.images[0] ? withImageWidth(product.images[0], 520) : "";
+        return [
+          '<article class="aura-swati-card">',
+          '<button type="button" class="aura-swati-product" data-query="', escapeHtml(product.name), '" aria-label="View ', escapeHtml(product.name), '">',
+          '<span class="aura-swati-image"><img src="', escapeHtml(image), '" alt="', escapeHtml(product.name), '" loading="lazy" decoding="async"><b>BESTSELLER</b></span>',
+          '<span class="aura-swati-copy"><small>', escapeHtml(product.fabric || "Chikankari"), '</small><strong>', escapeHtml(product.name), '</strong><span>₹', escapeHtml(product.price || 500), '</span></span>',
+          '</button>',
+          '</article>'
+        ].join("");
+      }).join(""),
+      '</div>',
+      '<button type="button" class="aura-swati-all">VIEW ALL ', escapeHtml(total), ' STYLES <span>→</span></button>'
+    ].join("");
+
+    section.querySelectorAll("[data-query]").forEach(function (button) {
+      button.addEventListener("click", function () {
+        searchAndScroll(input, button.dataset.query || "swati rathi");
+      });
+    });
+    section.querySelector(".aura-swati-all").addEventListener("click", function () {
+      searchAndScroll(input, "swati rathi");
+    });
+    return section;
+  }
+
+  function ensureSwatiSection(input) {
+    if (document.getElementById("swati-edit") || !window.AURA_SWATI_RATHI_COUNT) return;
+    var collection = document.querySelector(".collection");
+    if (collection) collection.insertAdjacentElement("afterend", makeSwatiSection(input));
+  }
+
+  function makeCodBanner() {
+    var banner = document.createElement("aside");
+    banner.className = "aura-cod-banner";
+    banner.setAttribute("aria-label", "Payment information");
+    banner.innerHTML = [
+      '<span class="aura-cod-icon" aria-hidden="true">₹</span>',
+      '<div class="aura-cod-copy"><small>PAYMENT UPDATE</small><strong>Cash on Delivery is not available</strong>',
+      '<p>Every order is confirmed on WhatsApp before online payment. Dispatch and tracking details are shared after confirmation.</p>',
+      '<span>14-day returns&nbsp; · &nbsp;₹0 shipping&nbsp; · &nbsp;3–4 day delivery</span></div>',
+      '<button type="button">HOW ORDERING WORKS <b>→</b></button>'
+    ].join("");
+    banner.querySelector("button").addEventListener("click", function () {
+      var target = document.querySelector(".policies") || document.querySelector(".cod-note");
+      if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+    return banner;
+  }
+
+  function ensureCodBanner() {
+    if (document.querySelector(".aura-cod-banner")) return;
+    var trustStrip = document.querySelector(".trust-strip");
+    if (trustStrip) trustStrip.insertAdjacentElement("afterend", makeCodBanner());
+  }
+
+  function ensureModalCodNotice() {
+    document.querySelectorAll(".product-details .detail-scroll").forEach(function (details) {
+      if (details.querySelector(".aura-modal-cod")) return;
+      var price = details.querySelector(".modal-price");
+      if (!price) return;
+      var notice = document.createElement("div");
+      notice.className = "aura-modal-cod";
+      notice.innerHTML = '<b>PREPAID ORDER</b><span>COD unavailable · WhatsApp confirmation before payment</span>';
+      price.insertAdjacentElement("afterend", notice);
     });
   }
 
@@ -114,6 +248,20 @@
       '<div><span class="aura-review-stars" aria-hidden="true">☆ ☆ ☆ ☆ ☆</span><strong>Purchased from Aura?</strong><p>Share your honest review after delivery. Add the product name, size and an optional photo.</p></div>',
       '<a href="https://wa.me/917357924991?text=Hello%20Aura%20Ethnic%20Studio%2C%20I%20would%20like%20to%20share%20my%20honest%20product%20review." target="_blank" rel="noopener">SHARE YOUR REVIEW <span>→</span></a>',
       '</div>',
+      '<div class="aura-source-reviews">',
+      '<div class="aura-source-head"><div><small>PUBLIC SOURCE PRODUCT FEEDBACK</small><h3>What shoppers said about these styles.</h3></div><a href="https://lucknowichikan.com/" target="_blank" rel="noopener">VIEW SOURCE ↗</a></div>',
+      '<p class="aura-source-disclaimer">These public reviews appear on Lucknowi Chikan and are not Aura Ethnic Studio order reviews. Summaries are shown for transparent product context.</p>',
+      '<div class="aura-source-rail">',
+      '<article><span>★★★★★</span><small>SOURCE REVIEW · R.A.</small><h4>Quality &amp; sizing</h4><p>The public reviewer praised the quality and said the sizing felt right.</p></article>',
+      '<article><span>★★★★★</span><small>SOURCE REVIEW · P.S.</small><h4>Beautiful craft</h4><p>Neat embroidery and premium-feeling fabric were the highlights.</p></article>',
+      '<article><span>★★★★★</span><small>SOURCE REVIEW · A.V.</small><h4>Comfortable fit</h4><p>The fit felt as expected, with an elegant feel for everyday wear.</p></article>',
+      '<article><span>★★★★★</span><small>SOURCE REVIEW · A.S.</small><h4>Fine details</h4><p>The fabric quality and embroidery detailing were especially appreciated.</p></article>',
+      '<article><span>★★★★★</span><small>SOURCE REVIEW · P.G.</small><h4>Better in person</h4><p>The colour and embroidery were described as even nicer in person.</p></article>',
+      '<article><span>★★★★★</span><small>SOURCE REVIEW · N.S.</small><h4>Soft &amp; neat</h4><p>Soft fabric, neat stitching and good overall value stood out.</p></article>',
+      '<article><span>★★★★★</span><small>SOURCE REVIEW · S.T.</small><h4>True to presentation</h4><p>The detailing and overall look matched the product presentation well.</p></article>',
+      '<article><span>★★★★★</span><small>SOURCE REVIEW · M.G.</small><h4>Finish &amp; value</h4><p>Quality, finish and fit were praised at a reasonable value.</p></article>',
+      '</div>',
+      '</div>',
       '</div>'
     ].join("");
     return section;
@@ -133,6 +281,8 @@
   function enhanceCatalog() {
     enhancementScheduled = false;
     ensureReviewSection();
+    ensureCodBanner();
+    ensureModalCodNotice();
     var input = document.getElementById("catalog-search");
     var tools = document.querySelector(".catalog-tools");
     if (!input || !tools) return;
@@ -183,6 +333,7 @@
 
     var chips = Array.from(quickBar.querySelectorAll(".aura-search-chip"));
     updateControls(input, clearButton, chips);
+    ensureSwatiSection(input);
     enhanceImages();
   }
 
