@@ -101,6 +101,7 @@
     if (!image) return;
     image.loading = "lazy";
     image.decoding = "async";
+    image.referrerPolicy = "no-referrer";
     var source = image.getAttribute("src") || image.src;
     var optimizedSource = withImageWidth(source, width);
     if (optimizedSource && optimizedSource !== source) {
@@ -121,6 +122,18 @@
     });
     document.querySelectorAll(".product-gallery > img").forEach(function (image) {
       image.decoding = "async";
+      image.referrerPolicy = "no-referrer";
+    });
+  }
+
+  function enhancePrivacy() {
+    document.querySelectorAll('a[href^="http"]').forEach(function (link) {
+      link.referrerPolicy = "no-referrer";
+      var rel = (link.getAttribute("rel") || "").split(/\s+/).filter(Boolean);
+      ["noopener", "noreferrer"].forEach(function (value) {
+        if (rel.indexOf(value) === -1) rel.push(value);
+      });
+      link.setAttribute("rel", rel.join(" "));
     });
   }
 
@@ -246,21 +259,7 @@
       '</div>',
       '<div class="aura-review-callout">',
       '<div><span class="aura-review-stars" aria-hidden="true">☆ ☆ ☆ ☆ ☆</span><strong>Purchased from Aura?</strong><p>Share your honest review after delivery. Add the product name, size and an optional photo.</p></div>',
-      '<a href="https://wa.me/917357924991?text=Hello%20Aura%20Ethnic%20Studio%2C%20I%20would%20like%20to%20share%20my%20honest%20product%20review." target="_blank" rel="noopener">SHARE YOUR REVIEW <span>→</span></a>',
-      '</div>',
-      '<div class="aura-source-reviews">',
-      '<div class="aura-source-head"><div><small>PUBLIC SOURCE PRODUCT FEEDBACK</small><h3>What shoppers said about these styles.</h3></div><a href="https://lucknowichikan.com/" target="_blank" rel="noopener">VIEW SOURCE ↗</a></div>',
-      '<p class="aura-source-disclaimer">These public reviews appear on Lucknowi Chikan and are not Aura Ethnic Studio order reviews. Summaries are shown for transparent product context.</p>',
-      '<div class="aura-source-rail">',
-      '<article><span>★★★★★</span><small>SOURCE REVIEW · R.A.</small><h4>Quality &amp; sizing</h4><p>The public reviewer praised the quality and said the sizing felt right.</p></article>',
-      '<article><span>★★★★★</span><small>SOURCE REVIEW · P.S.</small><h4>Beautiful craft</h4><p>Neat embroidery and premium-feeling fabric were the highlights.</p></article>',
-      '<article><span>★★★★★</span><small>SOURCE REVIEW · A.V.</small><h4>Comfortable fit</h4><p>The fit felt as expected, with an elegant feel for everyday wear.</p></article>',
-      '<article><span>★★★★★</span><small>SOURCE REVIEW · A.S.</small><h4>Fine details</h4><p>The fabric quality and embroidery detailing were especially appreciated.</p></article>',
-      '<article><span>★★★★★</span><small>SOURCE REVIEW · P.G.</small><h4>Better in person</h4><p>The colour and embroidery were described as even nicer in person.</p></article>',
-      '<article><span>★★★★★</span><small>SOURCE REVIEW · N.S.</small><h4>Soft &amp; neat</h4><p>Soft fabric, neat stitching and good overall value stood out.</p></article>',
-      '<article><span>★★★★★</span><small>SOURCE REVIEW · S.T.</small><h4>True to presentation</h4><p>The detailing and overall look matched the product presentation well.</p></article>',
-      '<article><span>★★★★★</span><small>SOURCE REVIEW · M.G.</small><h4>Finish &amp; value</h4><p>Quality, finish and fit were praised at a reasonable value.</p></article>',
-      '</div>',
+      '<a href="https://wa.me/917357924991?text=Hello%20Aura%20Ethnic%20Studio%2C%20I%20would%20like%20to%20share%20my%20honest%20product%20review." target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">SHARE YOUR REVIEW <span>→</span></a>',
       '</div>',
       '</div>'
     ].join("");
@@ -283,6 +282,7 @@
     ensureReviewSection();
     ensureCodBanner();
     ensureModalCodNotice();
+    enhancePrivacy();
     var input = document.getElementById("catalog-search");
     var tools = document.querySelector(".catalog-tools");
     if (!input || !tools) return;
