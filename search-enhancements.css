@@ -858,91 +858,6 @@
   padding: 0 18px;
 }
 
-/* Clearly attributed source-store product feedback. */
-.aura-source-reviews {
-  border-top: 1px solid rgba(255, 255, 255, 0.16);
-  margin-top: 26px;
-  padding-top: 24px;
-}
-
-.aura-source-head {
-  align-items: end;
-  display: flex;
-  gap: 20px;
-  justify-content: space-between;
-}
-
-.aura-source-head small {
-  color: #c9ab9d;
-  font-size: 7px;
-  font-weight: 800;
-  letter-spacing: 1.15px;
-}
-
-.aura-source-head h3 {
-  font: 400 25px/1.15 Georgia, serif;
-  margin: 6px 0 0;
-}
-
-.aura-source-head a {
-  border-bottom: 1px solid #d7bfb3;
-  color: #ead9d0;
-  flex: 0 0 auto;
-  font-size: 7px;
-  font-weight: 800;
-  letter-spacing: 0.9px;
-  padding-bottom: 4px;
-}
-
-.aura-source-disclaimer {
-  color: #cbbdb7;
-  font-size: 8.5px;
-  line-height: 1.55;
-  margin: 10px 0 14px;
-}
-
-.aura-source-rail {
-  display: grid;
-  gap: 8px;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-}
-
-.aura-source-rail article {
-  background: rgba(255, 255, 255, 0.075);
-  border: 1px solid rgba(255, 255, 255, 0.11);
-  border-radius: 11px;
-  min-height: 153px;
-  padding: 14px;
-}
-
-.aura-source-rail article > span {
-  color: #e4c1a9;
-  display: block;
-  font-size: 9px;
-  letter-spacing: 1.2px;
-}
-
-.aura-source-rail small {
-  color: #bba9a1;
-  display: block;
-  font-size: 6.5px;
-  font-weight: 800;
-  letter-spacing: 0.8px;
-  margin-top: 13px;
-}
-
-.aura-source-rail h4 {
-  font: 400 17px Georgia, serif;
-  margin: 6px 0;
-}
-
-.aura-source-rail p {
-  color: #cec2bd;
-  font-size: 8.5px;
-  line-height: 1.55;
-  margin: 0;
-}
-
 .fabrics,
 .editorial,
 .aura-reviews,
@@ -966,9 +881,6 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .aura-source-rail {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
 }
 
 @media (width <= 620px) {
@@ -1050,8 +962,7 @@
     scrollbar-width: none;
   }
 
-  .aura-swati-rail::-webkit-scrollbar,
-  .aura-source-rail::-webkit-scrollbar {
+  .aura-swati-rail::-webkit-scrollbar {
     display: none;
   }
 
@@ -1073,37 +984,6 @@
     width: 100%;
   }
 
-  .aura-source-reviews {
-    margin-top: 23px;
-  }
-
-  .aura-source-head {
-    align-items: start;
-  }
-
-  .aura-source-head h3 {
-    font-size: 21px;
-  }
-
-  .aura-source-head a {
-    margin-top: 3px;
-  }
-
-  .aura-source-rail {
-    display: flex;
-    gap: 9px;
-    margin-inline: -12px;
-    overflow-x: auto;
-    padding: 1px 12px 9px;
-    scroll-snap-type: x mandatory;
-    scrollbar-width: none;
-  }
-
-  .aura-source-rail article {
-    flex: 0 0 72vw;
-    min-height: 145px;
-    scroll-snap-align: start;
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {
