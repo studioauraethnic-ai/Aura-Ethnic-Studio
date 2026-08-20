@@ -709,3 +709,100 @@ body:has(.aura-wishlist-layer.is-open) .aura-install-banner {
     transition: none;
   }
 }
+
+
+/* Automatic order tracking access */
+.aura-tracking-access {
+  align-items: center;
+  background: linear-gradient(135deg, #2d211d, #56352d);
+  color: #fff;
+  display: grid;
+  gap: 34px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  padding-block: clamp(45px, 7vw, 78px);
+}
+
+.aura-tracking-copy {
+  max-width: 720px;
+}
+
+.aura-tracking-copy small {
+  color: #dcbfb1;
+  display: block;
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 1.8px;
+  margin-bottom: 13px;
+}
+
+.aura-tracking-copy h2 {
+  font: 400 clamp(36px, 5vw, 62px)/1 Georgia, serif;
+  margin: 0 0 13px;
+}
+
+.aura-tracking-copy p {
+  color: #e1d5cf;
+  font-size: 11px;
+  line-height: 1.7;
+  margin: 0;
+  max-width: 630px;
+}
+
+.aura-tracking-access > a {
+  align-items: center;
+  background: #fff;
+  border-radius: 10px;
+  color: var(--aura-upgrade-brown);
+  display: flex;
+  font-size: 8px;
+  font-weight: 800;
+  gap: 28px;
+  letter-spacing: 1px;
+  min-height: 54px;
+  padding: 0 20px;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.aura-tracking-access > a b {
+  font: 400 19px Georgia, serif;
+}
+
+.aura-track-nav {
+  color: var(--aura-upgrade-brown) !important;
+  font-weight: 800 !important;
+}
+
+.aura-order-error {
+  background: #fff0ee;
+  border: 1px solid #e6bdb6;
+  border-radius: 8px;
+  color: #913a30;
+  font-size: 9px;
+  line-height: 1.5;
+  margin: 10px 0 0;
+  padding: 10px 12px;
+  text-align: center;
+}
+
+.aura-order-error:empty {
+  display: none;
+}
+
+@media (width <= 760px) {
+  .aura-tracking-access {
+    gap: 25px;
+    grid-template-columns: 1fr;
+    padding: 48px 18px;
+    text-align: center;
+  }
+
+  .aura-tracking-copy {
+    margin: auto;
+  }
+
+  .aura-tracking-access > a {
+    justify-content: center;
+    width: 100%;
+  }
+}
