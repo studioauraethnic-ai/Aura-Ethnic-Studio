@@ -3,7 +3,7 @@
 
   var TRACKING_ORIGIN = "https://aura-ethnic-tracking-api.rohitrajmeena864.chatgpt.site";
   var ORDER_API_URL = TRACKING_ORIGIN + "/api/orders";
-  var TRACKING_PAGE_URL = TRACKING_ORIGIN + "/track";
+  var TRACKING_PAGE_URL = new URL("./tracking.html", window.location.href).toString();
   var ORDER_REQUEST_KEY = "auraPendingOrderRequestV1";
   var STORE_WHATSAPP_NUMBER = "917357924991";
 
@@ -687,7 +687,7 @@
   function registerApp() {
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", function () {
-        navigator.serviceWorker.register("./sw.js?v=6", {
+        navigator.serviceWorker.register("./sw.js?v=7", {
           scope: "./",
           updateViaCache: "none"
         }).then(function (registration) {
