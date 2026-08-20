@@ -6,6 +6,7 @@
   var totalProducts = mainCount + moreCount;
   var quickSearches = [
     ["All", ""],
+    ["Swati Rathi", "swati rathi"],
     ["Kurta Sets", "kurta set"],
     ["Long Kurta", "long kurta"],
     ["Short Kurta", "short kurta"],
@@ -78,13 +79,67 @@
     });
   }
 
+  function makeFilterToggle(tools) {
+    var toggle = document.createElement("button");
+    toggle.type = "button";
+    toggle.className = "aura-mobile-filter-toggle";
+    toggle.setAttribute("aria-expanded", "false");
+    toggle.textContent = "FILTERS";
+    toggle.addEventListener("click", function () {
+      var isOpen = tools.classList.toggle("filters-open");
+      toggle.setAttribute("aria-expanded", String(isOpen));
+      toggle.textContent = isOpen ? "CLOSE" : "FILTERS";
+    });
+    return toggle;
+  }
+
+  function makeReviewSection() {
+    var section = document.createElement("section");
+    section.id = "reviews";
+    section.className = "aura-reviews section";
+    section.innerHTML = [
+      '<div class="aura-review-heading">',
+      '<p class="eyebrow">CUSTOMER REVIEWS</p>',
+      '<h2>Real experiences.<br><em>Shared honestly.</em></h2>',
+      '<p>Aura publishes feedback only from confirmed customers. No copied testimonials, no made-up ratings—just genuine experiences after delivery.</p>',
+      '<span class="aura-review-pill">VERIFIED ORDERS ONLY</span>',
+      '</div>',
+      '<div class="aura-review-body">',
+      '<div class="aura-review-standards">',
+      '<article><span>01</span><small>CONFIRMED ORDER</small><h3>Reviews are verified</h3><p>We match feedback with a completed Aura order before it appears in the gallery.</p></article>',
+      '<article><span>02</span><small>PHOTO REVIEWS</small><h3>Show the real fit</h3><p>Customers can share an optional product photo along with fabric, colour and fitting feedback.</p></article>',
+      '<article><span>03</span><small>HONEST EXPERIENCE</small><h3>Your words stay yours</h3><p>We publish genuine feedback without changing its meaning—positive or constructive.</p></article>',
+      '</div>',
+      '<div class="aura-review-callout">',
+      '<div><span class="aura-review-stars" aria-hidden="true">☆ ☆ ☆ ☆ ☆</span><strong>Purchased from Aura?</strong><p>Share your honest review after delivery. Add the product name, size and an optional photo.</p></div>',
+      '<a href="https://wa.me/917357924991?text=Hello%20Aura%20Ethnic%20Studio%2C%20I%20would%20like%20to%20share%20my%20honest%20product%20review." target="_blank" rel="noopener">SHARE YOUR REVIEW <span>→</span></a>',
+      '</div>',
+      '</div>'
+    ].join("");
+    return section;
+  }
+
+  function ensureReviewSection() {
+    if (document.getElementById("reviews")) return;
+    var editorial = document.querySelector(".editorial");
+    var policies = document.querySelector(".policies");
+    if (editorial) {
+      editorial.insertAdjacentElement("afterend", makeReviewSection());
+    } else if (policies) {
+      policies.insertAdjacentElement("beforebegin", makeReviewSection());
+    }
+  }
+
   function enhanceCatalog() {
     enhancementScheduled = false;
+    ensureReviewSection();
     var input = document.getElementById("catalog-search");
     var tools = document.querySelector(".catalog-tools");
     if (!input || !tools) return;
 
-    input.placeholder = "Search " + totalProducts + " styles by name, colour or fabric…";
+    input.placeholder = window.matchMedia("(max-width: 760px)").matches
+      ? "Search " + totalProducts + " styles…"
+      : "Search " + totalProducts + " styles by name, colour or fabric…";
     input.setAttribute("aria-label", "Search all " + totalProducts + " Aura Ethnic Studio products");
     input.setAttribute("autocomplete", "off");
     input.setAttribute("enterkeyhint", "search");
@@ -119,6 +174,11 @@
     if (!quickBar) {
       quickBar = makeQuickSearch(input, clearButton);
       tools.insertAdjacentElement("afterend", quickBar);
+    }
+
+    var filterToggle = tools.querySelector(".aura-mobile-filter-toggle");
+    if (!filterToggle) {
+      tools.appendChild(makeFilterToggle(tools));
     }
 
     var chips = Array.from(quickBar.querySelectorAll(".aura-search-chip"));

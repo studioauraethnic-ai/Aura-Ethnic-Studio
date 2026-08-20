@@ -201,6 +201,156 @@
   min-height: 44px;
 }
 
+.aura-mobile-filter-toggle {
+  display: none;
+}
+
+.aura-reviews {
+  align-items: start;
+  background: #2b2420;
+  color: #fff;
+  display: grid;
+  gap: clamp(34px, 5vw, 76px);
+  grid-template-columns: minmax(260px, 0.72fr) minmax(0, 1.28fr);
+  overflow: hidden;
+  position: relative;
+}
+
+.aura-reviews::before {
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 50%;
+  content: "";
+  height: 430px;
+  left: -210px;
+  position: absolute;
+  top: -210px;
+  width: 430px;
+}
+
+.aura-review-heading,
+.aura-review-body {
+  min-width: 0;
+  position: relative;
+  z-index: 1;
+}
+
+.aura-review-heading .eyebrow {
+  color: #d7bfb3;
+}
+
+.aura-review-heading h2 {
+  letter-spacing: -1.2px;
+  margin: 0;
+  font: 400 clamp(39px, 4.2vw, 60px)/1.03 Georgia, serif;
+}
+
+.aura-review-heading h2 em {
+  color: #dbc2b6;
+  font-weight: 400;
+}
+
+.aura-review-heading > p:not(.eyebrow) {
+  color: #d2c5bf;
+  font-size: 11px;
+  line-height: 1.85;
+  margin: 22px 0;
+  max-width: 480px;
+}
+
+.aura-review-pill {
+  border: 1px solid rgba(255, 255, 255, 0.23);
+  border-radius: 999px;
+  color: #f2e5de;
+  display: inline-flex;
+  font-size: 7px;
+  font-weight: 800;
+  letter-spacing: 1.35px;
+  padding: 9px 12px;
+}
+
+.aura-review-standards {
+  display: grid;
+  gap: 9px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.aura-review-standards article {
+  background: #fffaf7;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 15px;
+  color: #2d211c;
+  min-height: 238px;
+  padding: 22px 18px;
+}
+
+.aura-review-standards article > span {
+  color: #b39283;
+  font: 400 27px Georgia, serif;
+}
+
+.aura-review-standards small {
+  color: #8d7064;
+  display: block;
+  font-size: 7px;
+  font-weight: 800;
+  letter-spacing: 1.15px;
+  margin-top: 30px;
+}
+
+.aura-review-standards h3 {
+  font: 400 21px/1.15 Georgia, serif;
+  margin: 9px 0;
+}
+
+.aura-review-standards p,
+.aura-review-callout p {
+  color: #75655d;
+  font-size: 9.5px;
+  line-height: 1.65;
+  margin: 0;
+}
+
+.aura-review-callout {
+  align-items: center;
+  background: #e8d8cf;
+  border-radius: 15px;
+  color: #2d211c;
+  display: flex;
+  gap: 25px;
+  justify-content: space-between;
+  margin-top: 10px;
+  padding: 19px 20px;
+}
+
+.aura-review-stars {
+  color: #795347;
+  display: block;
+  font-size: 17px;
+  letter-spacing: 2px;
+  margin-bottom: 7px;
+}
+
+.aura-review-callout strong {
+  display: block;
+  font: 400 20px Georgia, serif;
+  margin-bottom: 5px;
+}
+
+.aura-review-callout a {
+  align-items: center;
+  background: #4b2b25;
+  border-radius: 9px;
+  color: #fff;
+  display: inline-flex;
+  flex: 0 0 auto;
+  font-size: 8px;
+  font-weight: 800;
+  gap: 24px;
+  letter-spacing: 1px;
+  min-height: 48px;
+  padding: 0 16px;
+}
+
 @media (width <= 760px) {
   .collection.section {
     padding-left: 10px;
@@ -209,25 +359,66 @@
 
   .collection .catalog-tools {
     border-radius: 15px;
-    gap: 8px;
+    gap: 7px;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     margin-inline: 0;
-    padding: 10px;
-    top: 62px;
+    padding: 7px;
+    position: relative;
+    top: auto;
   }
 
   .collection .catalog-tools .search-field {
     grid-column: 1 / -1;
+    grid-row: 1;
   }
 
-  .collection .catalog-tools label:nth-child(4) {
+  .collection .catalog-tools:not(.filters-open) > label:not(.search-field) {
+    display: none;
+  }
+
+  .collection .catalog-tools .search-field > span {
+    display: none;
+  }
+
+  .aura-mobile-filter-toggle {
+    align-items: center;
+    background: #4b2b25;
+    border: 0;
+    border-radius: 10px;
+    color: #fff;
+    display: flex;
+    font-size: 7px;
+    font-weight: 800;
+    justify-content: center;
+    letter-spacing: 0.9px;
+    min-height: 44px;
+    padding: 0 8px;
+    position: absolute;
+    right: 7px;
+    top: 7px;
+    width: 70px;
+    z-index: 3;
+  }
+
+  .collection .catalog-tools.filters-open > label:nth-child(2) {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  .collection .catalog-tools.filters-open > label:nth-child(3) {
+    grid-column: 2;
+    grid-row: 2;
+  }
+
+  .collection .catalog-tools.filters-open > label:nth-child(4) {
     grid-column: 1 / -1;
+    grid-row: 3;
   }
 
   .collection .catalog-tools input,
   .collection .catalog-tools select {
     font-size: 16px;
-    height: 48px;
+    height: 44px;
     padding-inline: 10px;
   }
 
@@ -238,17 +429,18 @@
   .collection .search-field input {
     font-size: 16px;
     padding-left: 43px;
-    padding-right: 44px;
+    padding-right: 116px;
   }
 
   .collection .search-field::before {
-    bottom: 14px;
+    bottom: 9px;
   }
 
   .aura-search-clear {
-    bottom: 11px;
+    bottom: 6px;
     height: 32px;
     min-height: 32px;
+    right: 82px;
     width: 32px;
   }
 
@@ -257,24 +449,22 @@
   }
 
   .aura-quick-search {
-    align-items: flex-start;
-    display: grid;
-    gap: 7px;
-    margin: 10px 0 14px;
+    display: block;
+    margin: 5px 0 8px;
   }
 
   .aura-quick-search-label {
-    padding-left: 3px;
+    display: none;
   }
 
   .aura-quick-search-list {
     margin-inline: -10px;
-    padding: 2px 10px 7px;
+    padding: 2px 10px 4px;
   }
 
   .aura-search-chip {
-    min-height: 42px;
-    padding-inline: 16px;
+    min-height: 36px;
+    padding-inline: 14px;
   }
 
   .collection .catalog-summary {
@@ -320,6 +510,61 @@
 
   .collection .pagination::-webkit-scrollbar {
     display: none;
+  }
+
+  .aura-reviews {
+    display: block;
+    padding: 52px 12px;
+  }
+
+  .aura-review-heading h2 {
+    font-size: 38px;
+  }
+
+  .aura-review-heading > p:not(.eyebrow) {
+    font-size: 10.5px;
+    margin: 17px 0;
+  }
+
+  .aura-review-body {
+    margin-top: 27px;
+  }
+
+  .aura-review-standards {
+    display: flex;
+    gap: 9px;
+    margin-inline: -12px;
+    overflow-x: auto;
+    padding: 2px 12px 10px;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+
+  .aura-review-standards::-webkit-scrollbar {
+    display: none;
+  }
+
+  .aura-review-standards article {
+    flex: 0 0 78vw;
+    min-height: 205px;
+    padding: 20px 17px;
+    scroll-snap-align: start;
+  }
+
+  .aura-review-standards small {
+    margin-top: 23px;
+  }
+
+  .aura-review-callout {
+    align-items: stretch;
+    display: grid;
+    gap: 15px;
+    padding: 17px;
+  }
+
+  .aura-review-callout a {
+    justify-content: space-between;
+    width: 100%;
   }
 }
 
